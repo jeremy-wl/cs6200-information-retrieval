@@ -2,7 +2,6 @@ import urllib.request
 import re
 import requests
 import time
-import sys
 import os
 import urllib.parse
 from collections import deque
@@ -39,8 +38,10 @@ def crawl(seed_url, num_pages):
                 res = requests.get(top_url)
 
                 # construct html file path, with file name prepended with leading zeros
-                file_path = "outputs/html/{}_{}.html".format(str(num_pages_crawled+1).zfill(3),
-                                                             re.findall('.*/(.*)', top_url)[0])
+                file_path = "outputs/html/{}_{}.txt".format(
+                    str(num_pages_crawled+1).zfill(3),
+                    re.findall('.*/(.*)', top_url)[0].replace(',', '')
+                )
                 file_content = res.text
                 with open(file_path, 'w') as html_file:
                     html_file.write(file_content)
@@ -94,9 +95,5 @@ def crawl(seed_url, num_pages):
         f_stats.write('Max depth reached: {}\n'.format(depth_str))
 
 
-# crawl('https://en.wikipedia.org/wiki/Stephen_Robertson_(computer_scientist)', 5)
-
-
 if __name__ == '__main__':
-    args = sys.argv
-    crawl(args[1], int(args[2]))
+    crawl('https://en.wikipedia.org/wiki/Stephen_Robertson_(computer_scientist)', 900)
