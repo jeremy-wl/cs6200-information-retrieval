@@ -30,27 +30,29 @@ def process_terms(doc_name_to_terms):
 def build_inverted_index(inverted_lists):
     prev_term, prev_doc_id = inverted_lists[0][0], inverted_lists[0][1]
     freq_in_doc = 1
-    inverted_index = {term_dict[prev_term][0]: []}
+    inverted_index = {term_dict[prev_term][0]: {}}
 
     for i in range(1, len(inverted_lists)):
         term, doc_id = inverted_lists[i][0], inverted_lists[i][1]
+        term_id = term_dict[term][0]
+
+        if term_id not in inverted_index:
+            inverted_index[term_id] = {}
         if term == prev_term:
             if doc_id == prev_doc_id:
                 freq_in_doc += 1
             else:
-                term_id = term_dict[term][0]
-                inverted_index[term_id].append([prev_doc_id, freq_in_doc])
+                inverted_index[term_id][prev_doc_id] = freq_in_doc
                 prev_doc_id = doc_id
                 freq_in_doc = 1
                 term_dict[prev_term][1] += 1
         else:
             term_id, prev_term_id = term_dict[term][0], term_dict[prev_term][0]
-            inverted_index[prev_term_id].append([prev_doc_id, freq_in_doc])
-            inverted_index[term_id] = []
+            inverted_index[prev_term_id][prev_doc_id] = freq_in_doc
             prev_term, prev_doc_id = term, doc_id
             freq_in_doc = 1
     term_dict[prev_term][1] += 1
-    inverted_index[term_dict[prev_term][0]].append([prev_doc_id, freq_in_doc])
+    inverted_index[term_dict[prev_term][0]][prev_doc_id] = freq_in_doc
     return inverted_index
 
 

@@ -14,7 +14,13 @@ def extract_terms_from_html(html):
     for regexp in noises_regex:
         html = re.sub(regexp, ' ', html)
     terms = re.split(r'[ \n]', html)
-    return [x.lower() for x in terms if x]  # remove empty strings & convert to lowercase
+    return [term.lower() for term in terms if term]  # remove empty strings & convert to lowercase
+
+
+def extract_terms_from_query(query):
+    query = re.sub('([^\w\d])', ' ', query)
+    terms = query.split(' ')
+    return [term.lower() for term in terms if term]
 
 
 def transform_data(folder_name, num_files_to_process):

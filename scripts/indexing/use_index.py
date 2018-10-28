@@ -38,6 +38,10 @@ class UseIndex(object):
         term = term.lower()
         return self.term_dict[term][0] if term in self.term_dict else None
 
+    def get_term_doc_freq(self, term):
+        term = term.lower()
+        return self.term_dict[term][1] if term in self.term_dict else 0
+
     # given a term id, returns its entry in the inverted list
     def get_term_inverted_list(self, term_id):
         return self.inverted_index[term_id]
@@ -49,10 +53,16 @@ class UseIndex(object):
         if not term_id:
             return []
         doc_occurrences = self.get_term_inverted_list(term_id)
-        return [str(occurrence[0]) for occurrence in doc_occurrences]
+        return [doc_id for doc_id, freq in doc_occurrences.items()]
 
     def get_doc_name_from_id(self, doc_id):
         return self.doc_id_dict[doc_id][0]
+
+    def get_term_freq_in_doc(self, term, doc_id):
+        term_id = self.get_term_id(term)
+        if term_id is None or doc_id not in self.inverted_index[term_id]:
+            return 0
+        return self.inverted_index[term_id][doc_id]
 
     def search_term_in_docs(self, term):
         term = term.lower()
